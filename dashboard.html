@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InGrediBite - Dashboard</title>
+  <style>
+    @import url('https://cdnfonts.com');
+    body { 
+      background: linear-gradient(180deg, #f8f7f2 10%, #f8f7f2 35%, #6b8659 73%, #6b8659 100%); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      min-height: 100vh; 
+      margin: 0; font-family: Arial, sans-serif; 
+      padding: 20px; box-sizing: border-box; 
+    } 
+    .nav-bar { 
+      width: 100%; max-width: 900px; 
+      display: flex; justify-content: space-between; align-items: center; 
+      padding: 10px 0; margin-bottom: 25px; 
+    } 
+    .brand-name { font-family: 'Saint George', Georgia, serif; font-size: 1.8rem; color: #333; margin: 0; } 
+    .logout-btn { 
+      background-color: #e74c3c; color: white; border: none; 
+      padding: 8px 16px; border-radius: 6px; cursor: pointer; 
+      font-weight: bold; transition: background-color 0.2s; 
+    } 
+    .logout-btn:hover { background-color: #c0392b; } 
+    .dashboard-grid { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 25px; } 
+    .panel { background-color: white; padding: 30px; border-radius: 16px; box-shadow: 0px 8px 24px rgba(0,0,0,0.08); text-align: left; } 
+    h1 { color: #32a852; margin-top: 0; font-size: 2.2rem; } 
+    .subtitle { color: #666; font-size: 1.05rem; margin-bottom: 0; } 
+    h3 { margin-top: 0; color: #2c3e50; font-size: 1.3rem; border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; margin-bottom: 20px; } 
+    .allergen-container { display: flex; flex-wrap: wrap; gap: 12px; } 
+    .allergen-tag { 
+      background-color: #f1f2f6; color: #57606f; padding: 12px 20px; 
+      border-radius: 30px; font-weight: bold; font-size: 0.95rem; 
+      cursor: pointer; user-select: none; border: 2px solid transparent; 
+      transition: all 0.2s ease; 
+    } 
+    .allergen-tag:hover { background-color: #e4e7eb; transform: translateY(-1px); } 
+    .allergen-tag.active { background-color: #ffebea; color: #d63031; border-color: #ff7675; } 
+    .task-list { display: flex; flex-direction: column; gap: 15px; } 
+    .task-item { display: flex; align-items: center; gap: 15px; background-color: #fafafa; padding: 15px; border-radius: 10px; border-left: 5px solid #32a852; } 
+    .task-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: #32a852; cursor: pointer; } 
+    .task-text h4 { margin: 0 0 4px 0; color: #333; } 
+    .task-text p { margin: 0; color: #777; font-size: 0.88rem; } 
+    @media (min-width: 768px) { 
+      .dashboard-grid { flex-direction: row; } 
+      .main-panel { flex: 2; } .side-panel { flex: 1.2; } 
+    } 
+  </style> 
+</head> 
+<body> 
+  <div class="nav-bar"> 
+    <h2 class="brand-name">InGrediBite</h2> 
+    <button type="button" class="logout-btn" id="logoutBtn">Log out</button> 
+  </div> 
+  <div class="dashboard-grid"> 
+    <div class="panel main-panel"> 
+      <!-- Custom User Greetings Hook -->
+      <h1 id="welcomeUser">Welcome to InGrediBite!</h1> 
+      <p class="subtitle">Your personalized ingredient safety profile is completely loaded.</p> 
+      <div style="margin-top: 35px;"> 
+        <h3>🚫 My Dietary Restrictions</h3> 
+        <p style="color: #777; font-size: 0.9rem; margin-top: -10px; margin-bottom: 20px;">Click to toggle allergies. Your selections save automatically.</p> 
+        <div class="allergen-container"> 
+          <div class="allergen-tag" data-allergy="peanuts">🥜 Peanuts</div> 
+          <div class="allergen-tag" data-allergy="gluten">🌾 Gluten</div> 
+          <div class="allergen-tag" data-allergy="dairy">🥛 Dairy</div> 
+          <div class="allergen-tag" data-allergy="eggs">🥚 Eggs</div> 
+          <div class="allergen-tag" data-allergy="seafood">🐟 Seafood</div> 
+          <div class="allergen-tag" data-allergy="soy">🌱 Soy</div> 
+          <div class="allergen-tag" data-allergy="treenuts">🌳 Tree Nuts</div> 
+        </div> 
+      </div> 
+    </div> 
+    <div class="panel side-panel"> 
+      <h3>📋 Next Steps Setup</h3> 
+      <div class="task-list"> 
+        <div class="task-item"><input type="checkbox" id="task1"><div class="task-text"><h4>Verify Email</h4><p>Secure your profile setup</p></div></div> 
+        <div class="task-item"><input type="checkbox" id="task2"><div class="task-text"><h4>First Ingredient Scan</h4><p>Upload a food label package</p></div></div> 
+        <div class="task-item"><input type="checkbox" id="task3"><div class="task-text"><h4>Set Safety Level</h4><p>Configure sensitivity metrics</p></div></div> 
+      </div> 
+    </div> 
+  </div> 
+
+  <script> 
+    // Find who is logged in right now
+    const currentUser = localStorage.getItem("current_logged_in_user") || "Guest";
+    document.getElementById('welcomeUser').innerText = `Welcome, ${currentUser}!`;
+
+    // Clear logs on sign out
+    document.getElementById('logoutBtn').addEventListener('click', function() { 
+      localStorage.removeItem("current_logged_in_user");
+      window.location.href = "homepage.html"; 
+    }); 
+
+    // --- AUTOMATIC USER SELECTION LOADING ENGINE ---
+    const tags = document.querySelectorAll('.allergen-tag'); 
+    
+    // Load previously checked items when opening the screen
+    tags.forEach(tag => {
+      const allergyKey = tag.getAttribute('data-allergy');
+      const isSaved = localStorage.getItem(`allergy_${currentUser}_${allergyKey}`);
+      
+      if (isSaved === "active") {
+        tag.classList.add('active');
+      }
+
+      // Handle custom clicks and updates instantly
+      tag.addEventListener('click', function() { 
+        this.classList.toggle('active'); 
+        
+        if (this.classList.contains('active')) {
+          localStorage.setItem(`allergy_${currentUser}_${allergyKey}`, "active");
+        } else {
+          localStorage.removeItem(`allergy_${currentUser}_${allergyKey}`);
+        }
+      }); 
+    });
+  </script> 
+</body>
+</html>
