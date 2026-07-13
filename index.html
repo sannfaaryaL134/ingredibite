@@ -5,6 +5,16 @@
   <title>InGrediBite</title> 
   <style> 
     @import url('https://cdnfonts.com'); 
+
+    /* === FIXED FONT SETUP === */
+    /* This tells the browser to load your file from the main folder */
+    @font-face {
+      font-family: 'Saint George';
+      src: url('./saintgeorge-lowercasestencil.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
     body { 
       background: linear-gradient(180deg, #f8f7f2 10%, #f8f7f2 35%, #6b8659 73%, #6b8659 100%); 
       display: flex; 
@@ -99,7 +109,8 @@
     .email-btn:hover { background-color: #288441; } 
     .close-btn { 
       position: absolute; 
-      top: 10px; right: 15px; 
+      top: 10px; 
+      right: 15px; 
       font-size: 1.5rem; 
       background: none; 
       border: none; 
@@ -160,8 +171,11 @@
 </head> 
 <body> 
   <img src="ingredibitelogo.png" alt="Ingredibite Logo" class="logo"> 
+  
+  <!-- The font will now load beautifully on these text lines -->
   <h1 style="font-family: 'Saint George', Georgia, serif;">Our Mission:</h1> 
-  <p style="font-family: 'Saint George', Georgia, serif; font-style: italic;">Welcome to DineSafe!</p> 
+  <p style="font-family: 'Saint George', Georgia, serif; font-style: italic;">Welcome to InGrediBite!</p> 
+  
   <div> 
     <button type="button" id="loginBtn">Log in</button> 
     <button type="button" class="signup-btn" id="signupBtn">Sign up</button> 
@@ -191,7 +205,7 @@
   </div> 
   
   <script> 
-    const loginButton = document.getElementById('loginBtn');
+    const loginButton = document.getElementById('loginBtn'); 
     const signupButton = document.getElementById('signupBtn'); 
     const signupModal = document.getElementById('signupModal'); 
     const closeModal = document.getElementById('closeModal'); 
@@ -200,100 +214,84 @@
     const emailForm = document.getElementById('emailForm'); 
     const modalTitle = document.getElementById('modalTitle'); 
     const modalSub = document.getElementById('modalSub'); 
-    const emailBtn = document.getElementById('emailBtn');
-    const submitBtn = document.getElementById('submitBtn');
-
-    let isLoginMode = false;
-
+    const emailBtn = document.getElementById('emailBtn'); 
+    const submitBtn = document.getElementById('submitBtn'); 
+    let isLoginMode = false; 
     signupButton.addEventListener('click', function() { 
-      isLoginMode = false;
+      isLoginMode = false; 
       signupModal.style.display = 'flex'; 
       resetModal(); 
     }); 
-
-    loginButton.addEventListener('click', function() {
-      isLoginMode = true;
-      signupModal.style.display = 'flex';
-      resetModal();
-    });
-
+    loginButton.addEventListener('click', function() { 
+      isLoginMode = true; 
+      signupModal.style.display = 'flex'; 
+      resetModal(); 
+    }); 
     closeModal.addEventListener('click', function() { 
       signupModal.style.display = 'none'; 
     }); 
-
     window.addEventListener('click', function(event) { 
       if (event.target === signupModal) { 
         signupModal.style.display = 'none'; 
       } 
     }); 
-
     emailBtn.addEventListener('click', function() { 
       socialOptions.style.display = 'none'; 
       emailForm.style.display = 'flex'; 
       backButton.style.display = 'block'; 
-      if (isLoginMode) {
+      if (isLoginMode) { 
         modalTitle.innerText = "Log in with Email"; 
         modalSub.innerText = "Enter your account details:"; 
-        submitBtn.innerText = "Log In";
-      } else {
+        submitBtn.innerText = "Log In"; 
+      } else { 
         modalTitle.innerText = "Sign up with Email"; 
         modalSub.innerText = "Enter your details below:"; 
-        submitBtn.innerText = "Create Account";
-      }
+        submitBtn.innerText = "Create Account"; 
+      } 
     }); 
-
     backButton.addEventListener('click', resetModal); 
-
     function resetModal() { 
       socialOptions.style.display = 'flex'; 
       emailForm.style.display = 'none'; 
       backButton.style.display = 'none'; 
-      if (isLoginMode) {
+      if (isLoginMode) { 
         modalTitle.innerText = "Welcome Back"; 
         modalSub.innerText = "Choose how you want to log in:"; 
-        emailBtn.innerText = "Log in with Email";
-      } else {
+        emailBtn.innerText = "Log in with Email"; 
+      } else { 
         modalTitle.innerText = "Create an Account"; 
         modalSub.innerText = "Choose how you want to sign up:"; 
-        emailBtn.innerText = "Sign up with Email";
-      }
+        emailBtn.innerText = "Sign up with Email"; 
+      } 
     } 
-
-    // REAL USER MANAGEMENT RETRIEVAL ENGINE BLOCK
     emailForm.addEventListener('submit', function(event) { 
       event.preventDefault(); 
       const email = document.getElementById('userEmail').value; 
       const password = document.getElementById('userPassword').value; 
-
-      if (isLoginMode) {
-        // --- REAL LOGIN CHECK ---
-        const savedPassword = localStorage.getItem("user_pwd_" + email);
-        if (savedPassword && savedPassword === password) {
-          localStorage.setItem("current_logged_in_user", email);
+      if (isLoginMode) { 
+        const savedPassword = localStorage.getItem("user_pwd_" + email); 
+        if (savedPassword && savedPassword === password) { 
+          localStorage.setItem("current_logged_in_user", email); 
           window.location.href = "dashboard.html"; 
-        } else {
-          alert("Incorrect email or password combination!");
-        }
-      } else {
-        // --- REAL SIGNUP REGISTRATION ---
-        if (localStorage.getItem("user_pwd_" + email)) {
-          alert("An account with this email already exists!");
-        } else {
-          localStorage.setItem("user_pwd_" + email, password); // Saves account safely!
-          localStorage.setItem("current_logged_in_user", email); // Logs them in
+        } else { 
+          alert("Incorrect email or password combination!"); 
+        } 
+      } else { 
+        if (localStorage.getItem("user_pwd_" + email)) { 
+          alert("An account with this email already exists!"); 
+        } else { 
+          localStorage.setItem("user_pwd_" + email, password); 
+          localStorage.setItem("current_logged_in_user", email); 
           window.location.href = "dashboard.html"; 
-        }
-      }
+        } 
+      } 
     }); 
-
-    // Social buttons auto-simulate user generation tags
     document.getElementById('googleBtn').addEventListener('click', function() { 
-      localStorage.setItem("current_logged_in_user", "Google_User");
+      localStorage.setItem("current_logged_in_user", "Google_User"); 
       window.location.href = "dashboard.html"; 
     }); 
-
     document.getElementById('yahooBtn').addEventListener('click', function() { 
-      localStorage.setItem("current_logged_in_user", "Yahoo_User");
+      localStorage.setItem("current_logged_in_user", "Yahoo_User"); 
       window.location.href = "dashboard.html"; 
     }); 
   </script> 
